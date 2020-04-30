@@ -1,0 +1,12 @@
+routes:
+  hello:
+    method:   'GET'
+    path:     '/hello'
+    class:    '\Demo\Routes\Hello'
+    function: 'helloRequest'
+
+  bar:
+    method:   'GET'
+    path:     '/bar/[:name]'
+    class:    '\Demo\Routes\Bar'
+    function: 'foo'
