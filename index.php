@@ -6,6 +6,8 @@ use Symfony\Component\Yaml\Yaml;
 
 const CONFIG_PATH = 'config/routing.yml';
 
+$loadedDependencies = [];
+
 $klein = new \Klein\Klein();
 
 $routeConfig = Yaml::parse(file_get_contents(CONFIG_PATH));
@@ -21,21 +23,30 @@ foreach ($routeConfig['routes'] as $currentConfig) {
         $currentConfig['method'],
         $currentConfig['path'],
         $reflectionMethod->getClosure(
-            $reflectionClass->newInstanceArgs(constructArguments($currentConfig['dependency'] ?? []))
+            $reflectionClass->newInstanceArgs(constructArguments($currentConfig['dependency'] ?? [], $loadedDependencies))
         )
     );
 }
 
 $klein->dispatch();
 
-function constructArguments(array $dependencies): array
+/**
+ * @param array $dependencies
+ * @param $loadedDependencies
+ * @return array
+ */
+function constructArguments(array $dependencies, &$loadedDependencies): array
 {
     $arguments = [];
 
     foreach ($dependencies as $dependency) {
         validateClass($dependency);
 
-        $arguments[] = new $dependency;
+        if (!isset($loadedDependencies[$dependency])) {
+            $loadedDependencies[$dependency] = new $dependency;
+        }
+
+        $arguments[] = $loadedDependencies[$dependency];
     }
 
     return $arguments;
