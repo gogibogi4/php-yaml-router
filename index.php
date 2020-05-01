@@ -32,10 +32,10 @@ $klein->dispatch();
 
 /**
  * @param array $dependencies
- * @param $loadedDependencies
+ * @param array $loadedDependencies
  * @return array
  */
-function constructArguments(array $dependencies, &$loadedDependencies): array
+function constructArguments(array $dependencies, array &$loadedDependencies): array
 {
     $arguments = [];
 
