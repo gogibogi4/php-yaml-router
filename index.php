@@ -17,7 +17,6 @@ foreach ($routeConfig['routes'] as $currentConfig) {
     $reflectionClass  = new ReflectionClass($currentConfig['class']);
     $reflectionMethod = $reflectionClass->getMethod($currentConfig['function']);
 
-
     $klein->respond(
         $currentConfig['method'],
         $currentConfig['path'],
