@@ -4,6 +4,8 @@ routes:
     path:     '/hello'
     class:    '\Demo\Routes\Hello'
     function: 'helloRequest'
+    dependency:
+      - '\Demo\Dependency\NumberProvider'
 
   bar:
     method:   'GET'

@@ -11,12 +11,19 @@ $klein = new \Klein\Klein();
 $routeConfig = Yaml::parse(file_get_contents(CONFIG_PATH));
 
 foreach ($routeConfig['routes'] as $currentConfig) {
-    $reflectionMethod = new ReflectionMethod($currentConfig['class'], $currentConfig['function']);
+    $reflectionClass  = new ReflectionClass($currentConfig['class']);
+    $reflectionMethod = $reflectionClass->getMethod($currentConfig['function']);
+
+    $arguments = [];
+
+    foreach ($currentConfig['dependency'] ?? [] as $dependency) {
+        $arguments[] = new $dependency;
+    }
 
     $klein->respond(
         $currentConfig['method'],
         $currentConfig['path'],
-        $reflectionMethod->getClosure(new $currentConfig['class'])
+        $reflectionMethod->getClosure($reflectionClass->newInstanceArgs($arguments))
     );
 }
 
